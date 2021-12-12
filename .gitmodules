@@ -4,3 +4,6 @@
 [submodule "device-tree-xlnx"]
 	path = device-tree-xlnx
 	url = https://github.com/Xilinx/device-tree-xlnx.git
+[submodule "digilent-vivado-boards"]
+	path = digilent-vivado-boards
+	url = https://github.com/Digilent/vivado-boards.git

@@ -7,3 +7,6 @@
 [submodule "digilent-vivado-boards"]
 	path = digilent-vivado-boards
 	url = https://github.com/Digilent/vivado-boards.git
+[submodule "digilent-xdc"]
+	path = digilent-xdc
+	url = https://github.com/Digilent/digilent-xdc.git

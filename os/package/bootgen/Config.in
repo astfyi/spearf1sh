@@ -1,0 +1,4 @@
+config BR2_PACKAGE_BOOTGEN
+	bool "bootgen"
+	help
+	  Xilinx's bootgen tool

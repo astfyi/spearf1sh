@@ -1,0 +1,4 @@
+  config BR2_PACKAGE_SPEARF0RTH
+	bool "spearf0rth"
+	help
+	  A FORTH flavor for use with spearf1sh. 

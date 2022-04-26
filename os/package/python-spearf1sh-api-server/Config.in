@@ -1,0 +1,7 @@
+  config BR2_PACKAGE_PYTHON_SPEARF1SH_API_SERVER
+	bool "python-spearf1sh-api-server"
+	depends on BR2_PACKAGE_PYTHON3
+	depends on BR2_PACKAGE_PYTHON_FLASK
+	help
+          Spearf1sh REST API
+

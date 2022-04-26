@@ -1,0 +1,15 @@
+[Unit]
+Description=Spearf1sh API Service
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=python3 /usr/local/bin/spearf1sh-api-server.py
+RestartSec=3
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

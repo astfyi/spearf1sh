@@ -1,0 +1,9 @@
+config BR2_PACKAGE_PYTHON_CRYPTOAUTHLIB
+	bool "python-cryptoauthlib"
+
+	depends on BR2_PACKAGE_CRYPTOAUTHLIB
+	select BR2_PACKAGE_CRYPTOAUTHLIB_ATCAB_FUNCTIONS
+
+	help
+	  CryptoAuthLib - Microchip CryptoAuthentication Library
+	  https://github.com/MicrochipTech/cryptoauthlib/wiki

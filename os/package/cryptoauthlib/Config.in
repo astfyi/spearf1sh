@@ -1,0 +1,68 @@
+config BR2_PACKAGE_CRYPTOAUTHLIB
+	bool "cryptoauthlib"
+	depends on !BR2_STATIC_LIBS
+	help
+	  CryptoAuthLib - Microchip CryptoAuthentication Library
+
+	  https://github.com/MicrochipTech/cryptoauthlib/wiki
+
+
+if BR2_PACKAGE_CRYPTOAUTHLIB
+
+config BR2_PACKAGE_CRYPTOAUTHLIB_HAL_HID
+	bool "HID HAL Driver"
+	default y if BR2_PACKAGE_HAS_UDEV
+	depends on BR2_PACKAGE_HAS_UDEV
+	help
+	  Include the HID HAL Driver
+
+comment "HID HAL Driver needs udev"
+	depends on !BR2_PACKAGE_HAS_UDEV
+
+config BR2_PACKAGE_CRYPTOAUTHLIB_HAL_I2C
+	bool "I2C HAL Driver"
+	default y
+	help
+	  Include the I2C HAL Driver
+
+config BR2_PACKAGE_CRYPTOAUTHLIB_HAL_KIT_UART
+	bool "I2C HAL KIT Uart Driver"
+	default y
+	help
+	  Include the UART HAL Driver
+
+config BR2_PACKAGE_CRYPTOAUTHLIB_PKCS11
+	bool "PKCS11 Support"
+	default y
+	help
+	  Build PKCS11 Library Support
+
+config BR2_PACKAGE_CRYPTOAUTHLIB_ATECC608
+	bool "ATECC608 Support"
+	help
+	  Build ATECC608 Device Support
+
+config BR2_PACKAGE_CRYPTOAUTHLIB_TFLEX
+	bool "Tflex Support"
+	help
+	  Build Trustflex Template Support
+
+config BR2_PACKAGE_CRYPTOAUTHLIB_OPENSSL
+	bool "OpenSSL Library"
+	help
+	  Use OpenSSL Crypto Library
+
+config BR2_PACKAGE_CRYPTOAUTHLIB_ATCAB_FUNCTIONS
+	bool "ATCAB Functions"
+	help
+	  Use ATCAB Functions Rather Than Macros
+
+config BR2_PACKAGE_CRYPTOAUTHLIB_DEBUG
+	bool "Debug Print Statements"
+	help
+	  Enable Debug print statements in library - not for production
+
+endif
+
+comment "cryptoauthlib needs a toolchain w/ dynamic library support"
+	depends on BR2_STATIC_LIBS

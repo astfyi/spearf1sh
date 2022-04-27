@@ -16,7 +16,7 @@ PYTHON_CRYPTOAUTHLIB_SETUP_TYPE = setuptools
 PYTHON_CRYPTOAUTHLIB_SUBDIR = python
 
 define PYTHON_CRYPTOAUTHLIB_LN_LIBRARY
-	ln -s /usr/lib/libcryptoauth.so $(TARGET_DIR)/usr/lib/python3.9/site-packages/cryptoauthlib/
+	ln -s /usr/lib/libcryptoauth.so $(TARGET_DIR)/usr/lib/python3.10/site-packages/cryptoauthlib/
 endef
 PYTHON_CRYPTOAUTHLIB_POST_INSTALL_TARGET_HOOKS += PYTHON_CRYPTOAUTHLIB_LN_LIBRARY
 

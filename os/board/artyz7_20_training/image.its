@@ -1,0 +1,33 @@
+/dts-v1/;
+
+/ {
+    description = "SED Training ArtyZ7 Image";
+    #address-cells = <1>;
+
+    images {
+        kernel1 {
+            description = "linux kernel";
+            data = /incbin/("./zImage");
+            type = "kernel";
+            arch = "arm";
+            os = "linux";
+            compression = "none";
+            load = <0x10000000>;
+            entry = <0x10000000>;
+        };
+        fdt1 {
+            description = "artyz7 device tree";
+            data = /incbin/("./zynq-artyz7.dtb");
+            type = "flat_dt";
+            arch = "arm";
+            compression = "none";
+        };
+    };
+    configurations {
+        default = "conf1";
+        conf1 {
+            kernel = "kernel1";
+            fdt = "fdt1";
+        };
+    };
+};

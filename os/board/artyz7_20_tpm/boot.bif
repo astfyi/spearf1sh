@@ -1,0 +1,7 @@
+//arch = zynq; split = false; format = BIN
+the_ROM_image:
+{
+	[bootloader]fsbl.elf
+	fpga.bit
+	[load = 0x04000000, startup = 0x04000000]u-boot-dtb.bin
+}

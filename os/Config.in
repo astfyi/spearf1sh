@@ -5,4 +5,5 @@ source "$BR2_EXTERNAL_SPEARF1SH_PATH/package/spearf0rth/Config.in"
 source "$BR2_EXTERNAL_SPEARF1SH_PATH/package/cryptoauthlib/Config.in"
 source "$BR2_EXTERNAL_SPEARF1SH_PATH/package/python-cryptoauthlib/Config.in"
 source "$BR2_EXTERNAL_SPEARF1SH_PATH/package/python-spearf1sh-api-server/Config.in"
+source "$BR2_EXTERNAL_SPEARF1SH_PATH/package/fsverity-utils/Config.in"
 

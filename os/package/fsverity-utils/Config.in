@@ -1,0 +1,4 @@
+  config BR2_PACKAGE_FSVERITY_UTILS
+	bool "fsverity-utils"
+	help
+	  Userspace fsverity utilities.

@@ -16,6 +16,7 @@ If successful the sd card image is in `images/sdcard.img`.
 
 This is a complicated topic, but assuming you didn't not change the linux/uboot device tree and all the hardware associated with it, then you need to replace the board/<name_of_board>/fpga.bit and images/fpga.bit with your new bitstream, then type make from your work directory.
 
+## Cloning the entire project
 
 To clone, do:
 

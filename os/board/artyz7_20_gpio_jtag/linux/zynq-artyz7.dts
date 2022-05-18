@@ -60,6 +60,40 @@
 			xlnx,tri-default = <0xFFFFFFFF>;
 			xlnx,tri-default-2 = <0xFFFFFFFF>;
 		};
+                axi_uartlite_0: serial@42c00000 {
+			clock-names = "s_axi_aclk";
+			clocks = <&clkc 15>;
+			compatible = "xlnx,axi-uartlite-2.0", "xlnx,xps-uartlite-1.00.a";
+			current-speed = <115200>;
+			device_type = "serial";
+			interrupt-names = "interrupt";
+			interrupt-parent = <&intc>;
+			interrupts = <0 30 1>;
+			port-number = <0>;
+			reg = <0x42c00000 0x10000>;
+			xlnx,baudrate = <0x1c200>;
+			xlnx,data-bits = <0x8>;
+			xlnx,odd-parity = <0x0>;
+			xlnx,s-axi-aclk-freq-hz-d = "100.0";
+			xlnx,use-parity = <0x0>;
+		};
+		axi_uartlite_1: serial@42c10000 {
+			clock-names = "s_axi_aclk";
+			clocks = <&clkc 15>;
+			compatible = "xlnx,axi-uartlite-2.0", "xlnx,xps-uartlite-1.00.a";
+			current-speed = <115200>;
+			device_type = "serial";
+			interrupt-names = "interrupt";
+			interrupt-parent = <&intc>;
+			interrupts = <0 31 1>;
+			port-number = <1>;
+			reg = <0x42c10000 0x10000>;
+			xlnx,baudrate = <0x1c200>;
+			xlnx,data-bits = <0x8>;
+			xlnx,odd-parity = <0x0>;
+			xlnx,s-axi-aclk-freq-hz-d = "100.0";
+			xlnx,use-parity = <0x0>;
+		};
 
 	};
 };
@@ -73,6 +107,8 @@
 		ethernet0 = &gem0;
 		mmc0 = &sdhci0;
 		serial0 = &uart0;
+                serial1 = &axi_uartlite_0;
+                serial2 = &axi_uartlite_1;
 		spi0 = &qspi;
 	};
 

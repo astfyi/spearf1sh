@@ -24,6 +24,12 @@ To clone, do:
 git clone --recurse-submodules -j8 git@github.com:advancedsecio/spearf1sh.git
 ```
 
+## Default username and password
+
+`root:f1sh1`
+
+Don't raspberry pi me.
+
 ## Overview
 
 Spearf1sh is largely built around Digilent's Arty Zynq platform, which is a ARM Cortex-A SoC with a FPGA. This allows for embedded linux to run on the hard-core ARM and the FPGA to handle whatever you like.

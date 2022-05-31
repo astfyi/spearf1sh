@@ -52,3 +52,4 @@ WORKDIR /home/buildroot/work
 
 RUN make BR2_EXTERNAL=/home/buildroot/os O=/home/buildroot/work -C /home/buildroot/buildroot artyz7_20_gpio_jtag_defconfig
 RUN make
+

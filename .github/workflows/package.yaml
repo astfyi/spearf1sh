@@ -1,7 +1,7 @@
 name: package
 on: push
 jobs:
-  build:
+  package:
     runs-on: self-hosted
     steps:
       - name: Checkout repository

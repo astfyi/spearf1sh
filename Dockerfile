@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
-ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt update && apt install -y -q \
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y -q \
         bash \
         bc \
         binutils \
@@ -50,6 +50,5 @@ USER buildroot
 RUN mkdir work
 WORKDIR /home/buildroot/work
 
-RUN make BR2_EXTERNAL=/home/buildroot/os O=/home/buildroot/work -C /home/buildroot/buildroot artyz7_20_gpio_jtag_defconfig
-RUN make
-
+RUN make BR2_EXTERNAL=/home/buildroot/os O=/home/buildroot/work -C /home/buildroot/buildroot artyz7_20_gpio_jtag_defconfig && \
+    make

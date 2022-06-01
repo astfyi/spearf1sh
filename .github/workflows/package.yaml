@@ -1,0 +1,31 @@
+name: package
+on: push
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          token: ${{ secrets.GH_TOKEN }}
+
+      - name: Build image
+        run: |
+          docker build -t spearf1sh:latest .
+
+      - name: Get artifact from image
+        run: |
+          docker create --name spearf1sh spearf1sh:latest
+          docker cp spearf1sh:/home/buildroot/work/images/sdcard.img sdcard.img
+          docker rm spearf1sh
+
+      - name: Upload artifact to GitHub
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "sdcard.img"
+          token: ${{ secrets.GH_TOKEN }}
+
+      - name: Clean-up old image builds
+        run: |
+          docker image prune -f

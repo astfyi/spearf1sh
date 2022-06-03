@@ -20,12 +20,15 @@ jobs:
           docker cp spearf1sh:/home/buildroot/work/images/sdcard.img sdcard.img
           docker rm spearf1sh
 
-      - name: Upload artifact to GitHub
-        uses: ncipollo/release-action@v1
+      - uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          artifacts: "sdcard.img"
-          token: ${{ secrets.GH_TOKEN }}
+          repo_token: "${{ secrets.GH_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          files: |
+            sdcard.img
 
-      - name: Clean-up old image builds
+      - name: Clean-up old image builds & files
         run: |
+          rm sdcard.img
           docker image prune -f

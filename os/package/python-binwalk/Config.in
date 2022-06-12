@@ -1,0 +1,8 @@
+config BR2_PACKAGE_PYTHON_BINWALK
+	bool "python-binwalk"
+
+	depends on BR2_PACKAGE_PYTHON3
+
+	help
+	  Binwalk RE tool: https://github.com/ReFirmLabs/binwalk
+	  

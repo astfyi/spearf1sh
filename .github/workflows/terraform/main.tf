@@ -20,7 +20,7 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_security_group" "allow_ssh" {
-  name = "allow_ssh"
+  name = "allow_ssh_spearf1sh"
 
   ingress {
     from_port        = "22"
@@ -48,6 +48,7 @@ resource "aws_instance" "vm" {
   ami               = data.aws_ami.ubuntu.id
   instance_type     = "c6a.24xlarge"
   availability_zone = "eu-central-1b"
+  key_name          = aws_key_pair.ssh.key_name
   security_groups   = [aws_security_group.allow_ssh.name]
 
   root_block_device {

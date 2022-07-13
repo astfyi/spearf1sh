@@ -1,8 +1,3 @@
-resource "tls_private_key" "ssh" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -39,6 +34,11 @@ resource "aws_security_group" "allow_ssh" {
   }
 }
 
+resource "tls_private_key" "ssh" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 resource "aws_key_pair" "ssh" {
   key_name   = "spearf1sh"
   public_key = tls_private_key.ssh.public_key_openssh
@@ -48,8 +48,8 @@ resource "aws_instance" "vm" {
   ami               = data.aws_ami.ubuntu.id
   instance_type     = "c6a.24xlarge"
   availability_zone = "eu-central-1b"
-  key_name          = aws_key_pair.ssh.key_name
   security_groups   = [aws_security_group.allow_ssh.name]
+  key_name          = aws_key_pair.ssh.key_name
 
   root_block_device {
     volume_size = 1000
@@ -82,14 +82,12 @@ resource "aws_instance" "vm" {
       cd spearf1sh
 
       # Build image
-#      sudo docker build -t spearf1sh:latest .
-#      sudo docker create --name spearf1sh spearf1sh:latest
-#      sudo docker cp spearf1sh:/home/buildroot/work/images/sdcard.img sdcard.img
+      sudo docker build -t spearf1sh:latest .
+      sudo docker create --name spearf1sh spearf1sh:latest
+      sudo docker cp spearf1sh:/home/buildroot/work/images/sdcard.img sdcard.img
 
       # Create GitHub release
-      echo Hello > test.txt
-      GH_TOKEN="${var.gh_token}" gh release create -t latest-test --generate-notes latest-test test.txt
-#      gh release create latest sdcard.img
+      GH_TOKEN="${var.gh_token}" gh release create -t latest --generate-notes latest sdcard.img
     EOF
     ]
   }

@@ -65,7 +65,8 @@ resource "aws_instance" "vm" {
 
   provisioner "remote-exec" {
     inline = [
-      "echo Working"
+      "git clone git@github.com:advancedsecio/spearf1sh.git",
+      "docker images"
     ]
   }
 }

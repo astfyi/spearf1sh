@@ -39,15 +39,7 @@ jobs:
                             -var="aws_region=${{ secrets.AWS_REGION }}"
         working-directory: .github/workflows/terraform
 
-#  package:
-#    runs-on: self-hosted
 #    steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v2
-#        with:
-#          submodules: recursive
-#          token: ${{ secrets.GH_TOKEN }}
-#
 #      - name: Build image
 #        run: |
 #          docker build -t spearf1sh:latest .

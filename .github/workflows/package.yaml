@@ -25,7 +25,7 @@ jobs:
           pwd
 #          terraform apply -auto-approve
 #          terraform destroy -auto-approve
-        working-directory: ./github/workflows/terraform
+        working-directory: .github/workflows/terraform
 
 
 

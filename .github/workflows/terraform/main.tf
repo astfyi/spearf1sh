@@ -65,6 +65,7 @@ resource "aws_instance" "vm" {
 
   provisioner "remote-exec" {
     inline = [
+      "ssh-keyscan github.com >> ~/.ssh/known_hosts",
       "git clone git@github.com:advancedsecio/spearf1sh.git",
       "docker images"
     ]

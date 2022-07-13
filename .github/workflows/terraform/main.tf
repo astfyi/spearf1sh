@@ -62,4 +62,10 @@ resource "aws_instance" "vm" {
     private_key = tls_private_key.ssh.private_key_openssh
     timeout     = "5m"
   }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo Working"
+    ]
+  }
 }

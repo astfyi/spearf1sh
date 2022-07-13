@@ -14,17 +14,22 @@ jobs:
           submodules: recursive
           token: ${{ secrets.GH_TOKEN }}
 
-      - name: Install Terraform & AWS
+      - name: Install Terraform
         run: |
           curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
           sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-          sudo apt-get update && sudo apt-get install -y terraform awscli
+          sudo apt-get update && sudo apt-get install -y terraform
 
       - name: Build image inside Terraform provisioned instance
         run: |
-          pwd
-#          terraform apply -auto-approve
-#          terraform destroy -auto-approve
+          ls -a ~
+
+          terraform init
+          terraform apply -auto-approve \
+                          -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" \
+                          -var="aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" \
+                          -var="aws_region=${{ secrets.AWS_REGION }}"
+          terraform destroy -auto-approve
         working-directory: .github/workflows/terraform
 
 

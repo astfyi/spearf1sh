@@ -60,6 +60,31 @@
 			xlnx,tri-default = <0xFFFFFFFF>;
 			xlnx,tri-default-2 = <0xFFFFFFFF>;
 		};
+                axi_iic_0: i2c@41600000 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			clock-names = "s_axi_aclk";
+			clocks = <&clkc 15>;
+			compatible = "xlnx,axi-iic-2.1", "xlnx,xps-iic-2.00.a";
+			interrupt-names = "iic2intc_irpt";
+			interrupt-parent = <&intc>;
+			interrupts = <0 33 4>;
+			reg = <0x41600000 0x10000>;
+		};
+		axi_quad_spi_0: axi_quad_spi@41e00000 {
+			bits-per-word = <8>;
+			clock-names = "ext_spi_clk", "s_axi_aclk";
+			clocks = <&clkc 15>, <&clkc 15>;
+			compatible = "xlnx,axi-quad-spi-3.2", "xlnx,xps-spi-2.00.a";
+			fifo-size = <16>;
+			interrupt-names = "ip2intc_irpt";
+			interrupt-parent = <&intc>;
+			interrupts = <0 32 1>;
+			num-cs = <0x1>;
+			reg = <0x41e00000 0x10000>;
+			xlnx,num-ss-bits = <0x1>;
+			xlnx,spi-mode = <0>;
+		};
                 axi_uartlite_0: serial@42c00000 {
 			clock-names = "s_axi_aclk";
 			clocks = <&clkc 15>;
@@ -94,6 +119,26 @@
 			xlnx,s-axi-aclk-freq-hz-d = "100.0";
 			xlnx,use-parity = <0x0>;
 		};
+                iic_pullup_helper: gpio@41220000 {
+			#gpio-cells = <3>;
+			clock-names = "s_axi_aclk";
+			clocks = <&clkc 15>;
+			compatible = "xlnx,axi-gpio-2.0", "xlnx,xps-gpio-1.00.a";
+			gpio-controller ;
+			reg = <0x41220000 0x10000>;
+			xlnx,all-inputs = <0x1>;
+			xlnx,all-inputs-2 = <0x0>;
+			xlnx,all-outputs = <0x0>;
+			xlnx,all-outputs-2 = <0x0>;
+			xlnx,dout-default = <0x00000000>;
+			xlnx,dout-default-2 = <0x00000000>;
+			xlnx,gpio-width = <0x2>;
+			xlnx,gpio2-width = <0x20>;
+			xlnx,interrupt-present = <0x0>;
+			xlnx,is-dual = <0x0>;
+			xlnx,tri-default = <0xFFFFFFFF>;
+			xlnx,tri-default-2 = <0xFFFFFFFF>;
+		};
 
 	};
 };
@@ -110,6 +155,8 @@
                 serial1 = &axi_uartlite_0;
                 serial2 = &axi_uartlite_1;
 		spi0 = &qspi;
+                i2c0 = &axi_iic_0;
+                spi1 = &axi_quad_spi_0;
 	};
 
 	memory {
@@ -163,7 +210,7 @@
 
 &usb0 {
 	status = "okay";
-	dr_mode = "host";
+	dr_mode = "otg";
 	usb-phy = <&usb_phy0>;
 };
 
@@ -171,6 +218,36 @@
 &intc {
 	num_cpus = <2>;
 	num_interrupts = <96>;
+};
+
+&axi_iic_0 {
+	clock-frequency = <100000>;
+	status = "okay";
+};
+
+&axi_quad_spi_0 {
+	status = "okay";
+	spidev: spidev@0 {
+		compatible = "linux,spidev";
+		spi-max-frequency = <25000000>;
+		reg = <0>;
+	};
+	// NOTE: can only either have a spidev or mtd flash node, but not both
+	// flash1: n25q256a13@0 {
+	// 	compatible = "micron,n25q256a13", "jedec,spi-nor";
+	// 	reg = <0x0>;
+	// 	spi-max-frequency = <25000000>;
+	// 	#address-cells = <1>;
+	// 	#size-cells = <1>;
+	// 	partition@0 {
+	// 		label = "sf_4k";
+	// 		reg = <0x00000000 0x00001000>;
+	// 	};
+	// 	partition@1 {
+	// 		label = "sf_remainder";
+	// 		reg = <0x00001000 0x01FFF000>;
+	// 	};
+	// };
 };
 
 

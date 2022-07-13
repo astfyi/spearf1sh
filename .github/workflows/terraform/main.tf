@@ -80,7 +80,8 @@ resource "aws_instance" "vm" {
 #      sudo docker cp spearf1sh:/home/buildroot/work/images/sdcard.img sdcard.img
 
       # Create GitHub release
-      cat <<< "${var.gh_token}" | gh auth login --with-token
+      GH_TOKEN="${var.gh_token}"
+      gh auth login
       touch test.txt
 #      gh release create latest sdcard.img
       gh release create latest-test test.txt

@@ -40,11 +40,3 @@ jobs:
                             -var="aws_region=${{ secrets.AWS_REGION }}" \
                             -var="gh_token=${{ secrets.GH_TOKEN }}"
         working-directory: .github/workflows/terraform
-
-#      - uses: "marvinpinto/action-automatic-releases@latest"
-#        with:
-#          repo_token: "${{ secrets.GH_TOKEN }}"
-#          automatic_release_tag: "latest"
-#          prerelease: false
-#          files: |
-#            sdcard.img

@@ -88,9 +88,7 @@ resource "aws_instance" "vm" {
 
       # Create GitHub release
       touch test.txt
-      pwd
-      ls
-      GH_TOKEN="${var.gh_token}" gh release create -t latest-test latest-test test.txt
+      GH_TOKEN="${var.gh_token}" gh release create -t latest-test --generate-notes latest-test test.txt
 #      gh release create latest sdcard.img
     EOF
     ]

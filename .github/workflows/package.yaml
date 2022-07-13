@@ -22,8 +22,6 @@ jobs:
 
       - name: Build image inside Terraform provisioned instance
         run: |
-          ls -a ~
-
           terraform init
           terraform apply -auto-approve \
                           -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" \

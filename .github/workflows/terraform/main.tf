@@ -1,3 +1,8 @@
+resource "tls_private_key" "ssh" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -18,37 +23,42 @@ resource "aws_security_group" "allow_ssh" {
   name = "allow_ssh"
 
   ingress {
-    from_port = "22"
-    to_port = "22"
-    protocol = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port        = "22"
+    to_port          = "22"
+    protocol         = "TCP"
+    cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
 
   egress {
-    from_port = "0"
-    to_port = "0"
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port        = "0"
+    to_port          = "0"
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
 }
 
+resource "aws_key_pair" "ssh" {
+  key_name   = "spearf1sh"
+  public_key = tls_private_key.ssh.public_key_openssh
+}
+
 resource "aws_instance" "vm" {
-  ami = data.aws_ami.ubuntu.id
-  instance_type = "c6a.24xlarge"
+  ami               = data.aws_ami.ubuntu.id
+  instance_type     = "c6a.24xlarge"
   availability_zone = "eu-central-1b"
-  security_groups = [aws_security_group.allow_ssh.name]
+  security_groups   = [aws_security_group.allow_ssh.name]
 
   root_block_device {
     volume_size = 1000
   }
 
-#  connection {
-#    host = self.public_ip
-#    user = "root"
-#    type = "ssh"
-#    private_key = file("~/.ssh/id_rsa")
-#    timeout = "5m"
-#  }
+  connection {
+    host        = self.public_ip
+    user        = "root"
+    type        = "ssh"
+    private_key = tls_private_key.ssh.private_key_openssh
+    timeout     = "5m"
+  }
 }

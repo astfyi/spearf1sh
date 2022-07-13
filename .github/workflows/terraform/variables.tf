@@ -12,3 +12,8 @@ variable "aws_region" {
   type = string
   description = "AWS region"
 }
+
+variable "gh_token" {
+  type = string
+  description = "GitHub PAT"
+}

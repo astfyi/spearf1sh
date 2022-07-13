@@ -27,10 +27,14 @@ jobs:
                           -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" \
                           -var="aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" \
                           -var="aws_region=${{ secrets.AWS_REGION }}"
-          terraform destroy -auto-approve
         working-directory: .github/workflows/terraform
 
-
+      - name: Destroy Terraform provisioned instance
+        if: always()
+        run: |
+          terraform init
+          terraform destroy -auto-approve
+        working-directory: .github/workflows/terraform
 
 #  package:
 #    runs-on: self-hosted

@@ -57,7 +57,7 @@ resource "aws_instance" "vm" {
 
   connection {
     host        = self.public_ip
-    user        = "root"
+    user        = "ubuntu"
     type        = "ssh"
     private_key = tls_private_key.ssh.private_key_openssh
     timeout     = "5m"

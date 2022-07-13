@@ -75,11 +75,15 @@ resource "aws_instance" "vm" {
       git clone --recurse-submodules https://github.com/advancedsecio/spearf1sh.git
 
       # Build image
-      sudo docker build -t spearf1sh:latest spearf1sh
-      sudo docker create --name spearf1sh spearf1sh:latest
-      sudo docker cp spearf1sh:/home/buildroot/work/images/sdcard.img sdcard.img
+#      sudo docker build -t spearf1sh:latest spearf1sh
+#      sudo docker create --name spearf1sh spearf1sh:latest
+#      sudo docker cp spearf1sh:/home/buildroot/work/images/sdcard.img sdcard.img
 
       # Create GitHub release
+      cat <<< "${var.gh_token}" | gh auth login --with-token
+      touch test.txt
+#      gh release create latest sdcard.img
+      gh release create latest-test test.txt
     EOF
     ]
   }

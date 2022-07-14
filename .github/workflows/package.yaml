@@ -1,9 +1,8 @@
 name: package
-#on: 
-#  push:
-#    branches:    
-#      - 'main'
-on: push
+on: 
+  push:
+    branches:    
+      - 'main'
 jobs:
   package:
     runs-on: ubuntu-latest
@@ -33,10 +32,14 @@ jobs:
                           -var="aws_region=${{ secrets.AWS_REGION }}"
         working-directory: .github/workflows/terraform
 
-      - name: Create release with the artifact
-        run: |
-          pwd
-          ls -a
+      - name: Create release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GH_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          files: |
+            sdcard.img
 
       - name: Destroy Terraform provisioned instance
         if: always()

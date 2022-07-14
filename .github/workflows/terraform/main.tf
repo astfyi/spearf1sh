@@ -67,7 +67,7 @@ resource "aws_instance" "vm" {
       sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
       # Clone spearf1sh repository
-      git clone --recurse-submodules https://github.com/advancedsecio/spearf1sh.git
+      git clone --recurse-submodules -j8 https://github.com/advancedsecio/spearf1sh.git
 
       # Build image
       sudo docker build -t spearf1sh:latest spearf1sh

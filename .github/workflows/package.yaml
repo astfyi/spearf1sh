@@ -1,8 +1,9 @@
 name: package
-on: 
-  push:
-    branches:    
-      - 'main'
+#on: 
+#  push:
+#    branches:    
+#      - 'main'
+on: push
 jobs:
   package:
     runs-on: ubuntu-latest

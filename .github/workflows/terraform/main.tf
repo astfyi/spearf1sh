@@ -70,9 +70,10 @@ resource "aws_instance" "vm" {
       git clone --recurse-submodules -j8 https://github.com/advancedsecio/spearf1sh.git
 
       # Build image
-      sudo docker build -t spearf1sh:latest spearf1sh
-      sudo docker create --name spearf1sh spearf1sh:latest
-      sudo docker cp spearf1sh:/home/buildroot/work/images/sdcard.img sdcard.img
+#      sudo docker build -t spearf1sh:latest spearf1sh
+#      sudo docker create --name spearf1sh spearf1sh:latest
+#      sudo docker cp spearf1sh:/home/buildroot/work/images/sdcard.img sdcard.img
+      echo Hello >> sdcard.img
     EOF
     ]
   }

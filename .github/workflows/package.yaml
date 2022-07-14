@@ -36,7 +36,8 @@ jobs:
       - name: Create release with the artifact
         run: |
           pwd
-          ls
+          ls -a
+          ls -a spearf1sh
 
       - name: Destroy Terraform provisioned instance
         if: always()

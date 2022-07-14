@@ -34,14 +34,9 @@ resource "aws_security_group" "allow_ssh" {
   }
 }
 
-resource "tls_private_key" "ssh" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
 resource "aws_key_pair" "ssh" {
   key_name   = "spearf1sh"
-  public_key = tls_private_key.ssh.public_key_openssh
+  public_key = file("~/.ssh/id_rsa.pub")
 }
 
 resource "aws_instance" "vm" {
@@ -59,7 +54,7 @@ resource "aws_instance" "vm" {
     host        = self.public_ip
     user        = "ubuntu"
     type        = "ssh"
-    private_key = tls_private_key.ssh.private_key_openssh
+    private_key = file("~/.ssh/id_rsa")
     timeout     = "5m"
   }
 

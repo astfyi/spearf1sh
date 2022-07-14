@@ -14,11 +14,16 @@ jobs:
           submodules: recursive
           token: ${{ secrets.GH_TOKEN }}
 
-      - name: Install Terraform
+      - name: Prepare local host
         run: |
+          # Install Terraform
           curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
           sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
           sudo apt-get update && sudo apt-get install -y terraform
+
+          # Generate SSH keypair
+          ssh-keygen -t rsa -b 4096 -N '' -f ~/.ssh/id_rsa
+          ls -a ..
 
       - name: Build image inside Terraform provisioned instance
         run: |

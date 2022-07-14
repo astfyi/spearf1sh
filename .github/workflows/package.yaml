@@ -20,6 +20,8 @@ jobs:
           sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
           sudo apt-get update && sudo apt-get install -y terraform
 
+          ls -a ..
+
       - name: Build image inside Terraform provisioned instance
         run: |
           terraform init
@@ -32,7 +34,6 @@ jobs:
       - name: Create release with the artifact
         run: |
           pwd
-          ls
 
       - name: Destroy Terraform provisioned instance
         if: always()

@@ -1,8 +1,9 @@
 name: package
-on: 
-  push:
-    branches:    
-      - 'main'
+#on: 
+#  push:
+#    branches:    
+#      - 'main'
+on: push
 jobs:
   package:
     runs-on: ubuntu-latest
@@ -25,9 +26,13 @@ jobs:
           terraform apply -auto-approve \
                           -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" \
                           -var="aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" \
-                          -var="aws_region=${{ secrets.AWS_REGION }}" \
-                          -var="gh_token=${{ secrets.GH_TOKEN }}"
+                          -var="aws_region=${{ secrets.AWS_REGION }}"
         working-directory: .github/workflows/terraform
+
+      - name: Create release with the artifact
+        run: |
+          pwd
+          ls
 
       - name: Destroy Terraform provisioned instance
         if: always()
@@ -36,6 +41,5 @@ jobs:
           terraform destroy -auto-approve \
                             -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" \
                             -var="aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" \
-                            -var="aws_region=${{ secrets.AWS_REGION }}" \
-                            -var="gh_token=${{ secrets.GH_TOKEN }}"
+                            -var="aws_region=${{ secrets.AWS_REGION }}"
         working-directory: .github/workflows/terraform

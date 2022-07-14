@@ -79,6 +79,6 @@ resource "aws_instance" "vm" {
   }
 
   provisioner "local-exec" {
-    command = "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@${self.public_ip}:~/sdcard.img ~/spearf1sh/sdcard.img"
+    command = "pwd && ls -a && scp ubuntu@${self.public_ip}:~/sdcard.img ~/spearf1sh/sdcard.img"
   }
 }

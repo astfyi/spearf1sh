@@ -34,14 +34,9 @@ resource "aws_security_group" "allow_ssh" {
   }
 }
 
-resource "tls_private_key" "ssh" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
 resource "aws_key_pair" "ssh" {
   key_name   = "spearf1sh"
-  public_key = tls_private_key.ssh.public_key_openssh
+  public_key = file("~/.ssh/id_rsa.pub")
 }
 
 resource "aws_instance" "vm" {
@@ -59,7 +54,7 @@ resource "aws_instance" "vm" {
     host        = self.public_ip
     user        = "ubuntu"
     type        = "ssh"
-    private_key = tls_private_key.ssh.private_key_openssh
+    private_key = file("~/.ssh/id_rsa")
     timeout     = "5m"
   }
 
@@ -71,24 +66,18 @@ resource "aws_instance" "vm" {
       echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
       sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
-      # Install GitHub CLI
-      curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-      sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
-      echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-      sudo apt-get update && sudo apt install -y gh
-
       # Clone spearf1sh repository
       git clone --recurse-submodules https://github.com/advancedsecio/spearf1sh.git
-      cd spearf1sh
 
       # Build image
-      sudo docker build -t spearf1sh:latest .
+      sudo docker build -t spearf1sh:latest spearf1sh
       sudo docker create --name spearf1sh spearf1sh:latest
       sudo docker cp spearf1sh:/home/buildroot/work/images/sdcard.img sdcard.img
-
-      # Create GitHub release
-      GH_TOKEN="${var.gh_token}" gh release create -t latest --generate-notes latest sdcard.img
     EOF
     ]
+  }
+
+  provisioner "local-exec" {
+    command = "ssh-keyscan ${self.public_ip} >> ~/.ssh/known_hosts && scp ubuntu@${self.public_ip}:~/sdcard.img ~/work/spearf1sh/spearf1sh/sdcard.img"
   }
 }

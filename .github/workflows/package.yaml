@@ -13,11 +13,15 @@ jobs:
           submodules: recursive
           token: ${{ secrets.GH_TOKEN }}
 
-      - name: Install Terraform
+      - name: Prepare local host
         run: |
+          # Install Terraform
           curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
           sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
           sudo apt-get update && sudo apt-get install -y terraform
+
+          # Generate SSH keypair
+          ssh-keygen -t rsa -b 4096 -N '' -f ~/.ssh/id_rsa
 
       - name: Build image inside Terraform provisioned instance
         run: |
@@ -25,9 +29,17 @@ jobs:
           terraform apply -auto-approve \
                           -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" \
                           -var="aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" \
-                          -var="aws_region=${{ secrets.AWS_REGION }}" \
-                          -var="gh_token=${{ secrets.GH_TOKEN }}"
+                          -var="aws_region=${{ secrets.AWS_REGION }}"
         working-directory: .github/workflows/terraform
+
+      - name: Create release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GH_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          files: |
+            sdcard.img
 
       - name: Destroy Terraform provisioned instance
         if: always()
@@ -36,6 +48,5 @@ jobs:
           terraform destroy -auto-approve \
                             -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY }}" \
                             -var="aws_secret_key=${{ secrets.AWS_SECRET_KEY }}" \
-                            -var="aws_region=${{ secrets.AWS_REGION }}" \
-                            -var="gh_token=${{ secrets.GH_TOKEN }}"
+                            -var="aws_region=${{ secrets.AWS_REGION }}"
         working-directory: .github/workflows/terraform

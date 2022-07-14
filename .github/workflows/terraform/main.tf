@@ -79,6 +79,6 @@ resource "aws_instance" "vm" {
   }
 
   provisioner "local-exec" {
-    command = "pwd && ls -a && ls -a spearf1sh && ssh-keyscan ${self.public_ip} >> ~/.ssh/known_hosts && scp ubuntu@${self.public_ip}:~/sdcard.img ~/spearf1sh/spearf1sh/sdcard.img"
+    command = "ssh-keyscan ${self.public_ip} >> ~/.ssh/known_hosts && scp ubuntu@${self.public_ip}:~/sdcard.img ~/work/spearf1sh/spearf1sh/sdcard.img"
   }
 }

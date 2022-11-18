@@ -1,0 +1,4 @@
+  config BR2_PACKAGE_TPM_SIMULATOR
+	bool "tpm-simulator"
+	help
+	  Userspace Runs the tpm simulator as a service.

@@ -1,0 +1,9 @@
+[Unit]
+Description=TPM2.0 Simulator Server daemon
+Before=tpm2-abrmd.service
+[Service]
+ExecStart=/usr/bin/tpm_server
+Restart=always
+Environment=PATH=/usr/bin
+[Install]
+WantedBy=multi-user.target

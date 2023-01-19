@@ -15,3 +15,4 @@ PYTHON_BINWALK_SETUP_TYPE = setuptools
 
 
 $(eval $(python-package))
+$(eval $(host-python-package))

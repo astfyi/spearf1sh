@@ -1,0 +1,211 @@
+#
+# Xilinx Zynq 7000 SoC
+#
+#  Chris Johns <chrisj@rtems.org>
+#
+# Setup
+# -----
+#
+# Create a user configuration following the "Configuration Basics" in the user
+# documentation. In the file have:
+#
+#    source [find interface/ftdi/flyswatter2.cfg]
+#    source [find board/zynq-zc706-eval.cfg]
+#    adapter_khz 2000
+#    init
+#
+
+if { [info exists CHIPNAME] } {
+    global _CHIPNAME
+    set _CHIPNAME $CHIPNAME
+} else {
+    global _CHIPNAME
+    set _CHIPNAME zynq
+}
+
+if { [info exists ENDIAN] } {
+    set _ENDIAN $ENDIAN
+} else {
+    # this defaults to a bigendian
+    set _ENDIAN little
+}
+
+if { [info exists SMP] } {
+    global _SMP
+    set _SMP 1
+} else {
+    global _SMP
+    set _SMP 0
+}
+
+#
+# PL Tap.
+#
+# See ug585 ZYNQ-7000 TRM PSS_IDCODE for how this number is constructed.
+#   0x03731093 - ZC706 Eval board 1.1
+#   0x23731093 - ??
+#   0x23727093 - Zedboard Rev. C and D
+#
+# Set in your configuration file or board specific file.
+#
+if { [info exists PL_TAPID] } {
+    set _PL_TAPID $PL_TAPID
+} else {
+    set _PL_TAPID 0x03731093
+}
+
+jtag newtap $_CHIPNAME tap -irlen 6 -ircapture 0x001 -irmask 0x003 \
+    -expected-id $_PL_TAPID
+
+#
+# CoreSight Debug Access Port
+#
+if { [info exists DAP_TAPID] } {
+    set _DAP_TAPID $DAP_TAPID
+} else {
+    set _DAP_TAPID 0x4ba00477
+}
+
+jtag newtap $_CHIPNAME dap -irlen 4 -ircapture 0x01 -irmask 0x03 \
+    -expected-id $_DAP_TAPID
+
+#
+# GDB target: Cortex-A9, using DAP, configuring only one core
+# Base addresses of cores:
+# core 0  -  0xF8890000
+# core 1  -  0xF8892000
+#
+# Read from the ROM table with the patch to read the nested table.
+#
+
+set _TARGETNAME_0 $_CHIPNAME.cpu.0
+set _TARGETNAME_1 $_CHIPNAME.cpu.1
+
+target create $_TARGETNAME_0 cortex_a -coreid 0 \
+    -endian $_ENDIAN \
+    -chain-position $_CHIPNAME.dap \
+    -dbgbase 0x80090000
+if { $_SMP } {
+    echo "Zynq CPU1."
+    target create $_TARGETNAME_1 cortex_a -coreid 1 \
+        -endian $_ENDIAN \
+        -chain-position $_CHIPNAME.dap \
+        -dbgbase 0x80092000
+    target smp $_TARGETNAME_0 $_TARGETNAME_1
+}
+
+#
+# Hack to get the registers into a stable state when first booting a zynq in
+# JTAG mode. If r11 is pointing to an invalid address and you use gdb to set a
+# register the write will fail because gdb attempts to scan or unwind the
+# current frame and the bad address seems to lock the bus up. This code puts
+# the registers into the OCM and hopefull safe.
+#
+proc zynq_clear_registers { target } {
+    echo "Zynq-7000 Series setup: $target"
+    set _OCM_END 0x0003FFF0
+    mww phys 0xF8007000 0x4E00E07F
+    reg r0 0
+    reg r1 0
+    reg r2 0
+    reg r3 0
+    reg r4 0
+    reg r5 0
+    reg r6 0
+    reg r7 0
+    reg r8 0
+    reg r9 0
+    reg r10 0
+    reg r11 $_OCM_END
+    reg sp_svc $_OCM_END
+    reg lr_svc $_OCM_END
+    reg sp_abt $_OCM_END
+    reg lr_abt $_OCM_END
+    reg sp_und $_OCM_END
+    reg lr_und $_OCM_END
+}
+
+proc zynq_disable_mmu_and_caches { target } {
+    # arm mcr pX op1 CRn CRm op2 value
+    echo "Disable MMU and caches"
+    # Invalidate caches
+    catch {
+        $target arm mcr 15 0 7 5 0 0
+        $target arm mcr 15 0 7 7 0 0
+        # Invalidate all TLBs
+        $target arm mcr 15 0 8 5 0 0
+        $target arm mcr 15 0 8 6 0 0
+        $target arm mcr 15 0 8 7 0 0
+        $target arm mcr 15 4 8 3 0 0
+        $target arm mcr 15 4 8 7 0 0
+        set cp [$target arm mrc 15 0 1 0 0]
+        echo "SCTRL => [format 0x%x $cp]"
+        set mask [expr 1 << 29 | 1 << 12 | 1 << 11 | 1 << 2 | 1 << 1 | 1 << 0]
+        set cp [expr ($cp & ~$mask)]
+        $target arm mcr 15 0 1 0 0 $cp
+        echo "SCTRL <= [format 0x%x $cp]"
+    }
+}
+
+proc zynq_boot_ocm_setup { } {
+    #
+    # Enable the OCM
+    #
+    echo "Zynq Boot OCM setup"
+    catch {
+      mww phys 0xF8000008 0xDF0D
+      mww phys 0xF8000238 0
+      mww phys 0xF8000910 0xC
+    }
+}
+
+proc zynq_rtems_setup { } {
+    cache_config l2x 0xF8F02000 8
+    cortex_a maskisr on
+}
+
+proc zynq_restart { wait } {
+    global _SMP
+    global _TARGETNAME_0
+    global _TARGETNAME_1
+    set target0 $_TARGETNAME_0
+    set target1 $_TARGETNAME_1
+    echo "Zynq reset, resetting the board ... "
+    poll off
+    #
+    # Issue the reset via the SLCR
+    #
+    catch {
+        mww phys 0xF8000008 0xDF0D
+        mww phys 0xF8000200 1
+    }
+    echo "Zynq reset waiting for $wait msecs ... "
+    sleep $wait
+    #
+    # Reconnect the DAP etc due to the reset.
+    #
+    $target0 cortex_a dbginit
+    $target0 arm core_state arm
+    if { $_SMP } {
+        $target1 arm core_state arm
+        $target1 cortex_a dbginit
+        cortex_a smp_off
+    }
+    poll on
+    #
+    # We can now halt the core.
+    #
+    if { $_SMP } {
+        targets $target1
+        halt
+    }
+    targets $target0
+    halt
+    zynq_rtems_setup
+}
+
+proc zynq_gdb_attach { target } {
+    catch {
+      halt
+    }
+}

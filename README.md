@@ -3,7 +3,7 @@ Spearf1sh Embedded Hacking Tool
 
 ## Quick start
 
-1. `git clone --recurse-submodules -j8 git@github.com:advancedsecio/spearf1sh.git`
+1. `git clone --recurse-submodules git@github.com:advancedsecio/spearf1sh.git`
 2. `cd spearf1sh/os`
 3. `mkdir work_artyz7_20_gpio_jtag && cd work_artyz7_20_gpio_jtag/` (this is your "work" directory)
 4. `make BR2_EXTERNAL=../os/ O=$PWD -C ../../buildroot artyz7_20_gpio_jtag_defconfig`

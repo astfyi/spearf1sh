@@ -1,3 +1,5 @@
+#!/bin/bash
+
 make_spearf1sh_defconfig () {
     make BR2_DL_DIR=$SPEARF1SH_BR2_DL_DIR $SPEARF1SH_WORK_DIR BR2_EXTERNAL=$SPEARF1SH_INSTALL_DIR/os O=$SPEARF1SH_WORK_DIR -C $SPEARF1SH_INSTALL_DIR/buildroot $SPEARF1SH_DEFCONFIG
 }
@@ -56,6 +58,19 @@ make_spearf1sh_dirs () {
     printf " Creating the required directories.\n$RESET"
     mkdir -p "$SPEARF1SH_INSTALL_DIR"
 }
+
+install_deps()
+{
+    ## Prompt the user
+    read -p "Do you want to install missing libraries? [Y/n]: " answer
+    ## Set the default value if no answer was given
+    answer=${answer:Y}
+    ## If the answer matches y or Y, install
+    [[ $answer =~ [Yy] ]] && sudo apt-get install ${deps[@]}
+}
+
+
+deps=("bash" "bc" "binutils" "bison" "bsdmainutils" "build-essential" "bzip2" "ca-certificates" "cmake-extras" "cmake" "cpio" "cryptsetup" "debianutils" "flex" "gcc" "git" "gnu-efi" "g++" "gzip" "libelf-dev" "libncurses5-dev" "libnss3-tools" "libpcap-dev" "libssl-dev" "locales" "lzop" "make" "patch" "perl" "python-dev" "python" "qemu-system-x86" "rsync" "sbsigntool" "sed" "swig" "tar" "unzip" "wget" "zlib1g-dev")
 
 colors_ () {
     case "$SHELL" in
@@ -205,6 +220,21 @@ then
     printf "If you want to start from scratch and remove everyting, rerun with -r\n"
     exit 1;
 fi
+
+mkdir -p $HOME/.spearf1sh
+
+if [ -f $HOME/.spearf1sh/deps ]
+then
+    printf "\n\nDeps installed\n"
+else
+    dpkg -s "${deps[@]}" >/dev/null 2>&1 || install_deps
+    if [ $? -eq 0 ]
+    then
+       touch $HOME/.spearf1sh/deps
+    fi
+
+fi
+
 
 ### Check dependencies
 printf  "$CYAN Checking to see if git is installed... $RESET"

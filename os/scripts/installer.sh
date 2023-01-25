@@ -69,6 +69,11 @@ install_deps()
     [[ $answer =~ [Yy] ]] && sudo apt-get install ${deps[@]}
 }
 
+cmp_bitstreams()
+{
+    md5sum $SPEARF1SH_BITSTREAM $SPEARF1SH_ORIG_BITSTREAM $SPEARF1SH_WORK_DIR/images/fpga.bit
+}
+
 
 deps=("bash" "bc" "binutils" "bison" "bsdmainutils" "build-essential" "bzip2" "ca-certificates" "cmake-extras" "cmake" "cpio" "cryptsetup" "debianutils" "flex" "gcc" "git" "gnu-efi" "g++" "gzip" "libelf-dev" "libncurses5-dev" "libnss3-tools" "libpcap-dev" "libssl-dev" "locales" "lzop" "make" "patch" "perl" "python-dev" "python" "qemu-system-x86" "rsync" "sbsigntool" "sed" "swig" "tar" "unzip" "wget" "zlib1g-dev")
 
@@ -112,6 +117,7 @@ usage() {
     printf "  -b, --buildroot_dl [dir] \t Install Spearf1sh buildroot download cache.\n"
     printf "  \t \t \t \t If 'dir' is a relative path prefix with $HOME.\n"
     printf "  \t \t \t \t Defaults to $HOME/.spearf1sh/buildroot_dl\n"
+    printf "  --bitstream [.bit] \t *expert* Provides a new bitstream to the build.\n"
     printf "  -f, --defconfig [config] \t \t Make the 'config' defconfig.\n"
     printf "  \t \t \t \t Defaults to 'artyz7_20_gpio_jtag_defconfig'.\n"
     printf "  -s, --source [url] \t \t Clone Spearf1sh from 'url'.\n"
@@ -159,6 +165,10 @@ do
             SPEARF1SH_REMAKE='true';
             shift 1
             ;;
+        --bitstream)
+            SPEARF1SH_BITSTREAM=$2
+            shift 2
+            ;;
         *)
             printf "Unknown option: $1\n"
             shift 1
@@ -174,11 +184,24 @@ VERBOSE_COLOR=$BBLUE
 [ -z "$SPEARF1SH_DEFCONFIG" ] && SPEARF1SH_DEFCONFIG="artyz7_20_gpio_jtag_defconfig"
 [ -n "$BR2_DL_DIR" ] && SPEARF1SH_BR2_DL_DIR="$BR2_DL_DIR"
 [ -z "$SPEARF1SH_BR2_DL_DIR" ] && SPEARF1SH_BR2_DL_DIR="$HOME/.spearf1sh/buildroot_dl"
+SPEARF1SH_ORIG_BITSTREAM="$SPEARF1SH_INSTALL_DIR/os/board/artyz7_20_gpio_jtag/fpga.bit"
+
+if [ -n "$SPEARF1SH_BITSTREAM" ]
+then
+    # needs to not be hardcoded board path, OK for now
+   cmp_bitstreams
+   cp "$SPEARF1SH_BITSTREAM" $SPEARF1SH_INSTALL_DIR/os/board/artyz7_20_gpio_jtag/fpga.bit
+fi
+
 
 
 if [ -n "$SPEARF1SH_REMAKE" ]
 then
     make_spearf1sh
+    if [ -n "$SPEARF1SH_BITSTREAM" ]
+    then
+        cmp_bitstreams
+    fi
     exit $?
 fi
 
@@ -202,6 +225,7 @@ then
     printf "$RESET"
     printf "$RESET"
 fi
+
 
 # If spearf1sh is already installed
 if [ -f "$SPEARF1SH_WORK_DIR/images/sdcard.img" ]

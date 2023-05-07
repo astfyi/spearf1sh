@@ -1,0 +1,13 @@
+config BR2_PACKAGE_PYTHON_LITEX
+	bool "python-litex"
+
+	depends on BR2_PACKAGE_PYTHON3
+        select BR2_PACKAGE_PYTHON_MIGEN
+        select BR2_PACKAGE_PYTHON_PACKAGING
+        select BR2_PACKAGE_PYTHON_REQUESTS
+
+
+
+	help
+	  Litex
+	  

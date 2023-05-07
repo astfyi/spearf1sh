@@ -1,0 +1,8 @@
+config BR2_PACKAGE_PYTHON_MIGEN
+	bool "python-migen"
+
+	depends on BR2_PACKAGE_PYTHON3
+
+	help
+	  Litex
+	  

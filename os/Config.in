@@ -8,4 +8,8 @@ source "$BR2_EXTERNAL_SPEARF1SH_PATH/package/python-spearf1sh-api-server/Config.
 source "$BR2_EXTERNAL_SPEARF1SH_PATH/package/fsverity-utils/Config.in"
 source "$BR2_EXTERNAL_SPEARF1SH_PATH/package/python-binwalk/Config.in"
 source "$BR2_EXTERNAL_SPEARF1SH_PATH/package/python-binwalk/Config.in.host"
+source "$BR2_EXTERNAL_SPEARF1SH_PATH/package/python-litex/Config.in"
+source "$BR2_EXTERNAL_SPEARF1SH_PATH/package/python-migen/Config.in"
+
+
 

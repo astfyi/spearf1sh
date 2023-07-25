@@ -5,7 +5,7 @@ Spearf1sh Embedded Hacking Tool and Distro
 ## Quick start
 
 ```shellsession
-wget https://raw.githubusercontent.com/advancedsecio/spearf1sh/main/os/scripts/installer.sh -O - | bash
+wget https://raw.githubusercontent.com/astfyi/spearf1sh/main/os/scripts/installer.sh -O - | bash
 ```
 
 This might take up to 2 hours.
